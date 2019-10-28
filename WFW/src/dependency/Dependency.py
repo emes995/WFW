@@ -16,7 +16,10 @@ class Dependency:
     def get_custodian_task(self):
         return self._custodian_task
 
-    def add_tasks(self, tasks: list):
+    async def remove_task(self, task: Task):
+        return self.dependent_tasks.remove(task)
+
+    async def add_tasks(self, tasks: list):
         for _t in tasks:
             assert isinstance(_t, Task)
             self + _t
