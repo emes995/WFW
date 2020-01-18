@@ -4,3 +4,6 @@ venv/**
 
 #ignore pycharms files
 .idea/
+
+#ignore pycache
+__pycache__

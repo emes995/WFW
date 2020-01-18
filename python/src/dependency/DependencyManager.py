@@ -1,4 +1,3 @@
-import uuid
 from dependency.Dependency import Dependency
 from task.Task import Task
 
@@ -17,7 +16,7 @@ class DependencyManager:
     async def add_task_to_dependency(self, dependency_name: str, task: Task) -> Dependency:
         _dp = self._dependencies[dependency_name]
         _dp = _dp + task
-        _dp.get_custodian_task.add_dependency([task])
+        await _dp.get_custodian_task.add_dependency([task])
 
         return _dp
 
@@ -34,8 +33,10 @@ class DependencyManager:
     async def get_tasks_in_dependency(self, dependency_name: str) -> list:
         _tasks = []
         for _t in self.get_dependency(dependency_name).dependent_tasks:
+            #_tasks.append(self.get_tasks_in_dependency(_t.task_name))
+            _tasks.extend(await _t.resolve_dependencies())
             _tasks.append(_t)
-            _tasks.extend(_t.resolve_dependencies())
+
         return _tasks
 
     def __str__(self):

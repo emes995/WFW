@@ -27,7 +27,7 @@ class Task:
         return self._id
 
     def __hash__(self):
-        return self.id
+        return hash(self.id)
 
     def __gt__(self, other):
         return self.id > other.id
@@ -50,12 +50,12 @@ class Task:
         _tasks = []
         for _t in task.dependencies:
             if _t.has_dependencies():
-                _tasks.extend(self._resolve_dependencies(_t))
+                _tasks.extend(await self._resolve_dependencies(_t))
             _tasks.append(_t)
         return _tasks
 
     async def resolve_dependencies(self):
-        return self._resolve_dependencies(self)
+        return await self._resolve_dependencies(self)
 
     async def do_work(self):
         print(f'do work({self._task_name}) {self._id}')

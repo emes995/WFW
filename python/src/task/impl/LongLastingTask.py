@@ -2,7 +2,7 @@
 #
 #
 import asyncio
-from src.task.Task import Task
+from task.Task import Task
 
 
 class LongLastingTask(Task):
@@ -11,5 +11,7 @@ class LongLastingTask(Task):
         super().__init__(task_name=task_name)
 
     async def do_work(self):
-        async for i in range(1e+4):
-            asyncio.sleep(1)
+        print(f'Executing task name: {self.task_name}')
+        for i in range(int(10)):
+            await asyncio.sleep(1)
+            print(f'Task name {self.task_name} and index {i}')

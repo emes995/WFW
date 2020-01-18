@@ -48,8 +48,11 @@ class TestAsyncTask(aiounittest.AsyncTestCase):
         await dpm.add_task_to_dependency('dep_4', t31)
         await dpm.add_task_to_dependency('dep_4', t1)
 
-        assert len(await dpm.get_tasks_in_dependency('dep_4')) == 5
-        assert len(await t1.resolve_dependencies()) == 3
+        deps = await t1.resolve_dependencies()
+        assert len(deps) == 3, f'acquired {len(deps)} instead of 3'
+
+        deps = await dpm.get_tasks_in_dependency('dep_4')
+        assert len(deps) == 5, f'acquired {len(deps)} instead of 5'
 
         sch = Scheduler(dpm)
         await sch.add_task(t1)
@@ -57,4 +60,3 @@ class TestAsyncTask(aiounittest.AsyncTestCase):
         await sch.add_task(t4)
 
         await sch.execute_tasks()
-
