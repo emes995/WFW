@@ -1,7 +1,7 @@
 import unittest
 import uuid
-
 from utils.OrderedIdGenerator import OrderedIdGenerator
+
 
 class TestIdGenerator(unittest.TestCase):
 

@@ -4,6 +4,7 @@
 
 from datetime import datetime
 
+
 class OrderedIdGenerator:
     @classmethod
     def generate_ordered_id(cls, start_seed: str):

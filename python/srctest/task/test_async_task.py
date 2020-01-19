@@ -3,11 +3,14 @@ from dependency.Dependency import Dependency
 from dependency.DependencyManager import DependencyManager
 from task.impl.LongLastingTask import LongLastingTask
 from scheduler.Scheduler import Scheduler
+import logging
 
 
 class TestAsyncTask(aiounittest.AsyncTestCase):
 
     async def test_async_task(self):
+
+        logging.info('Starting')
         dpm = DependencyManager()
         t1 = LongLastingTask('t1')
         t2 = LongLastingTask('t2')
