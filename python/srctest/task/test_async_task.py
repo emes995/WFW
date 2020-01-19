@@ -1,5 +1,4 @@
 import aiounittest
-
 from dependency.Dependency import Dependency
 from dependency.DependencyManager import DependencyManager
 from task.impl.LongLastingTask import LongLastingTask
@@ -61,3 +60,6 @@ class TestAsyncTask(aiounittest.AsyncTestCase):
         await sch.add_simple_task(t4)
 
         await sch.start()
+
+        results = await sch.collect_results_for_task(t1)
+        print(results)

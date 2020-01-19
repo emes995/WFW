@@ -18,6 +18,7 @@ class SimpleScheduler:
         self._parent_scheduler = parent_scheduler
 
     async def _add_pending_task(self, task: Task):
+        self._pending_tasks.append(task)
         await self._run_queue.put(task)
 
     async def add_task(self, task: Task):
@@ -39,5 +40,8 @@ class SimpleScheduler:
 
         while not self._run_queue.empty():
             _t = await self._run_queue.get()
+            self._pending_tasks.remove(_t)
+            self._running_tasks.append(_t)
             _tasks = await _t.resolve_dependencies()
             _results = await _schedule_tasks(_tasks)
+            self._parent_scheduler.set_result_for_task(_t, _results)

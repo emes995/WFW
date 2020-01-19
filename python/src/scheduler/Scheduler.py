@@ -9,14 +9,14 @@ class Scheduler:
     _SMALL_AMOUNT_OF_TIME = 0.001
 
     def __init__(self, dependency_manager: DependencyManager):
-        self._tasks = []
         self._dependency_manager = dependency_manager
         self._scheduler_helpers = {}
         self._task_to_scheduler = {}
+        self._results = {}
 
         self._initialize()
 
-    def _add_scheduler(self, scheduler_type: str, scheduler):
+    def add_scheduler(self, scheduler_type: str, scheduler):
         if scheduler_type not in self._scheduler_helpers:
             self._scheduler_helpers[scheduler_type] = scheduler
 
@@ -26,7 +26,7 @@ class Scheduler:
         return self._scheduler_helpers[scheduler_type]
 
     def _initialize(self):
-        self._add_scheduler(SimpleScheduler.SCHEDULE_NAME, SimpleScheduler(self))
+        self.add_scheduler(SimpleScheduler.SCHEDULE_NAME, SimpleScheduler(self))
 
     def _find_scheduler_for_task(self, task: Task):
         if task in self._task_to_scheduler:
@@ -45,3 +45,9 @@ class Scheduler:
     async def start(self):
         _schedulers = [_schd.start() for _k, _schd in self._scheduler_helpers.items()]
         await asyncio.gather(*_schedulers)
+
+    def set_result_for_task(self, task, result):
+        self._results[task] = result
+
+    async def collect_results_for_task(self, task: Task):
+        return self._results[task]

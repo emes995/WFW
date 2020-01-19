@@ -15,3 +15,5 @@ class LongLastingTask(Task):
         for i in range(int(10)):
             await asyncio.sleep(1)
             print(f'Task name {self.task_name} and index {i}')
+
+        return self.task_name
