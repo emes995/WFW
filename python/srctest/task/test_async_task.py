@@ -2,9 +2,9 @@ import aiounittest
 
 from dependency.Dependency import Dependency
 from dependency.DependencyManager import DependencyManager
-from task.Task import Task
 from task.impl.LongLastingTask import LongLastingTask
 from scheduler.Scheduler import Scheduler
+
 
 class TestAsyncTask(aiounittest.AsyncTestCase):
 
@@ -55,8 +55,9 @@ class TestAsyncTask(aiounittest.AsyncTestCase):
         assert len(deps) == 5, f'acquired {len(deps)} instead of 5'
 
         sch = Scheduler(dpm)
-        await sch.add_task(t1)
-        await sch.add_task(t2)
-        await sch.add_task(t4)
 
-        await sch.execute_tasks()
+        await sch.add_simple_task(t1)
+        await sch.add_simple_task(t2)
+        await sch.add_simple_task(t4)
+
+        await sch.start()

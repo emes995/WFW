@@ -1,6 +1,7 @@
 from dependency.Dependency import Dependency
 from task.Task import Task
 
+
 class DependencyManager:
 
     def __init__(self):
@@ -33,7 +34,7 @@ class DependencyManager:
     async def get_tasks_in_dependency(self, dependency_name: str) -> list:
         _tasks = []
         for _t in self.get_dependency(dependency_name).dependent_tasks:
-            #_tasks.append(self.get_tasks_in_dependency(_t.task_name))
+            # _tasks.append(self.get_tasks_in_dependency(_t.task_name))
             _tasks.extend(await _t.resolve_dependencies())
             _tasks.append(_t)
 

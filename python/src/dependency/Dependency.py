@@ -1,6 +1,7 @@
 import uuid
 from task.Task import Task
 
+
 class Dependency:
 
     def __init__(self, task: Task):

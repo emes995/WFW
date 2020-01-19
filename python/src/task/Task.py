@@ -3,10 +3,10 @@
 # @version:
 #
 
-import uuid
 from utils.OrderedIdGenerator import OrderedIdGenerator
 
 _BEGIN_SEED_KEY = 'f{uuid.uuid4()}'
+
 
 class Task:
     def __init__(self, task_name: str):
@@ -36,7 +36,7 @@ class Task:
         return isinstance(other, Task) and other.id == self.id
 
     async def delete_dependency(self, task):
-          self.dependencies.remove(task)
+        self.dependencies.remove(task)
 
     async def add_dependency(self, tasks: list):
         _myself = [_t for _t in tasks if _t == self]
@@ -46,7 +46,7 @@ class Task:
     def has_dependencies(self):
         return len(self._dependencies) > 0
 
-    async def _resolve_dependencies(self, task):
+    async def _resolve_dependencies(self, task) -> list:
         _tasks = []
         for _t in task.dependencies:
             if _t.has_dependencies():
