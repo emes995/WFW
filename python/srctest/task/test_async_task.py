@@ -4,12 +4,14 @@ from dependency.DependencyManager import DependencyManager
 from task.impl.LongLastingTask import LongLastingTask
 from scheduler.Scheduler import Scheduler
 import logging
+import logging.config
+import os
 
 
 class TestAsyncTask(aiounittest.AsyncTestCase):
 
     async def test_async_task(self):
-
+        logging.config.fileConfig(fname=os.path.join(os.path.dirname(__file__), '..', '..', 'src', 'config', 'logging.conf'))
         logging.info('Starting')
         dpm = DependencyManager()
         t1 = LongLastingTask('t1')
@@ -65,4 +67,4 @@ class TestAsyncTask(aiounittest.AsyncTestCase):
         await sch.start()
 
         results = await sch.collect_results_for_task(t1)
-        print(results)
+        logging.info(f'Results: {results}')
