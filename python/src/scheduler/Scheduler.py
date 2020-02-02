@@ -1,6 +1,7 @@
 from task.Task import Task
 from dependency.DependencyManager import DependencyManager
-from scheduler.SimpleScheduler import SimpleScheduler
+#from scheduler.SimpleScheduler import SimpleScheduler
+from scheduler.AsyncScheduler import AsyncScheduler
 import asyncio
 
 
@@ -26,7 +27,8 @@ class Scheduler:
         return self._scheduler_helpers[scheduler_type]
 
     def _initialize(self):
-        self.add_scheduler(SimpleScheduler.SCHEDULE_NAME, SimpleScheduler(self))
+        # self.add_scheduler(SimpleScheduler.SCHEDULE_NAME, SimpleScheduler(self))
+        self.add_scheduler(AsyncScheduler.SCHEDULE_NAME, AsyncScheduler(self))
 
     def _find_scheduler_for_task(self, task: Task):
         if task in self._task_to_scheduler:
@@ -34,7 +36,8 @@ class Scheduler:
         return None
 
     async def add_simple_task(self, task: Task):
-        await self._scheduler_helpers[SimpleScheduler.SCHEDULE_NAME].add_task(task)
+        # await self._scheduler_helpers[SimpleScheduler.SCHEDULE_NAME].add_task(task)
+        await self._scheduler_helpers[AsyncScheduler.SCHEDULE_NAME].add_task(task)
 
     async def delete_task(self, task: Task):
         _schd = self._find_scheduler_for_task(task)
