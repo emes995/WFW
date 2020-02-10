@@ -1,0 +1,79 @@
+{
+  "task": {
+    "name": "task-1",
+    "type": "LongLastingTask",
+    "depends-on": [],
+    "do-work": "print(%name%)",
+    "children": ["task-1-1"]
+  },
+  "task": {
+    "name": "task-2",
+    "type": "LongLastingTask",
+    "depends-on": [],
+    "do-work": "print(%name%)",
+    "children": ["task-2-1"]
+  },
+  "task": {
+    "name": "task-3",
+    "type": "LongLastingTask",
+    "depends-on": [],
+    "do-work": "print(%name%)",
+    "children": ["task-3-1", "task-3-2"]
+  },
+  "task": {
+    "name": "task-1-1",
+    "type": "LongLastingTask",
+    "depends-on": ["task-1"],
+    "do-work": "print(%name%)",
+    "children": []
+  },
+  "task": {
+    "name": "task-2-1",
+    "type": "LongLastingTask",
+    "depends-on": ["task-2"],
+    "do-work": "print(%name%)",
+    "children": []
+  },
+  "task": {
+    "name": "task-3-1",
+    "type": "LongLastingTask",
+    "depends-on": ["task-3"],
+    "do-work": "print(%name%)",
+    "children": ["task-3-1-1", "task-3-1-2", "task-3-1-3", "task-3-1-4"]
+  },
+  "task": {
+    "name": "task-3-2",
+    "type": "LongLastingTask",
+    "depends-on": ["task-3"],
+    "do-work": "print(%name%)",
+    "children": []
+  },
+  "task": {
+    "name": "task-3-1-1",
+    "type": "LongLastingTask",
+    "depends-on": ["task-3-1"],
+    "do-work": "print(%name%)",
+    "children": []
+  },
+  "task": {
+    "name": "task-3-1-2",
+    "type": "LongLastingTask",
+    "depends-on": ["task-3-1"],
+    "do-work": "print(%name%)",
+    "children": []
+  },
+  "task": {
+    "name": "task-3-1-3",
+    "type": "LongLastingTask",
+    "depends-on": ["task-3-1"],
+    "do-work": "print(%name%)",
+    "children": []
+  },
+  "task": {
+    "name": "task-3-1-4",
+    "type": "LongLastingTask",
+    "depends-on": ["task-3-1"],
+    "do-work": "print(%name%)",
+    "children": []
+  }
+}

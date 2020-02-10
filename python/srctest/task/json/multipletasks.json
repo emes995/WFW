@@ -1,0 +1,23 @@
+{
+  "task": {
+    "name": "task-1",
+    "type": "LongLastingTask",
+    "depends-on": [],
+    "do-work": "print(%name%)",
+    "children": []
+  },
+  "task": {
+    "name": "task-2",
+    "type": "LongLastingTask",
+    "depends-on": [],
+    "do-work": "print(%name%)",
+    "children": []
+  },
+  "task": {
+    "name": "task-3",
+    "type": "LongLastingTask",
+    "depends-on": ["task-1", "task-2"],
+    "do-work": "print(%name%)",
+    "children": []
+  }
+}

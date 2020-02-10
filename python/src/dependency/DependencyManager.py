@@ -43,3 +43,6 @@ class DependencyManager:
     def __str__(self):
         _items = [{"dependency_name": _k, "tasks": str(_v)} for _k, _v in self._dependencies.items()]
         return str(_items)
+
+
+g_dependency_mgr = DependencyManager()

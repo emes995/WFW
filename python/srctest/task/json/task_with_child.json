@@ -1,0 +1,19 @@
+{
+  "task": {
+    "name": "task-children",
+    "type": "LongLastingTask",
+    "depends-on": [],
+    "do-work": "print(%name%)",
+    "children": [
+      {
+        "task": {
+          "name": "children-1",
+          "type": "LongLastingTask",
+          "depends-on": ["task-children"],
+          "do-work": "print(%name%)",
+          "children": []
+        }
+      }
+    ]
+  }
+}

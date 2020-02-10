@@ -2,13 +2,13 @@
 #
 #
 from task.Task import Task
-from dependency.DependencyManager import DependencyManager
+from dependency.DependencyManager import g_dependency_mgr
 from dependency.Dependency import Dependency
 
 import asyncio
 import logging
+import functools
 
-g_dependency_mgr = DependencyManager()
 
 class AsyncScheduler:
 
@@ -21,6 +21,10 @@ class AsyncScheduler:
         self._failed_taks = []
         self._running_tasks = []
         self._parent_scheduler = parent_scheduler
+
+    @property
+    def parent_scheduler(self):
+        return self._parent_scheduler
 
     async def _add_pending_task(self, task: Task):
         self._pending_tasks.append(task)
@@ -37,13 +41,18 @@ class AsyncScheduler:
     async def start(self):
         logging.debug('Starting scheduler')
 
-        async def _schedule_tasks(_tasks: list):
+        def _task_completed(task: Task, instanceObj, completedTask):
+            _result = completedTask.result()
+            logging.info(f'Task Completed task: {task.task_name} with result: {_result}')
+            instanceObj.parent_scheduler.set_result_for_task(_t, _result)
+
+        async def _schedule_tasks(_tasks: list, instanceObj):
             _sched_tasks = []
             _l_results = []
             for _tk in _tasks:
                 _sched_tasks.append(_tk.do_work())
-            _l_results = await asyncio.gather(*_sched_tasks)
-            return _l_results
+            _t = asyncio.ensure_future(*_sched_tasks)
+            _t.add_done_callback(functools.partial(_task_completed, _tk, instanceObj))
 
         while True:
             logging.debug('Attempting to fetch a task')
@@ -53,8 +62,7 @@ class AsyncScheduler:
             self._pending_tasks.remove(_t)
             self._running_tasks.append(_t)
             _tasks_to_execute.append(_t)
-            _results = await _schedule_tasks(_tasks_to_execute
-                                             )
-            self._parent_scheduler.set_result_for_task(_t, _results)
+            await _schedule_tasks(_tasks_to_execute, self)
+
 
         logging.info('Stopping scheduler')

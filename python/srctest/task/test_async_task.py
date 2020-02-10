@@ -60,9 +60,9 @@ class TestAsyncTask(aiounittest.AsyncTestCase):
 
         sch = Scheduler(dpm)
 
-        await sch.add_simple_task(t1)
-        await sch.add_simple_task(t2)
-        await sch.add_simple_task(t4)
+        await sch.add_task(t1)
+        await sch.add_task(t2)
+        await sch.add_task(t4)
 
         await sch.start()
 

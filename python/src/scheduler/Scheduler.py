@@ -27,7 +27,6 @@ class Scheduler:
         return self._scheduler_helpers[scheduler_type]
 
     def _initialize(self):
-        # self.add_scheduler(SimpleScheduler.SCHEDULE_NAME, SimpleScheduler(self))
         self.add_scheduler(AsyncScheduler.SCHEDULE_NAME, AsyncScheduler(self))
 
     def _find_scheduler_for_task(self, task: Task):
@@ -35,8 +34,7 @@ class Scheduler:
             return self._task_to_scheduler[task]
         return None
 
-    async def add_simple_task(self, task: Task):
-        # await self._scheduler_helpers[SimpleScheduler.SCHEDULE_NAME].add_task(task)
+    async def add_task(self, task: Task):
         await self._scheduler_helpers[AsyncScheduler.SCHEDULE_NAME].add_task(task)
 
     async def delete_task(self, task: Task):
