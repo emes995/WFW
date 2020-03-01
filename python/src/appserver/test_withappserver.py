@@ -11,6 +11,7 @@ import logging
 import logging.config
 import asyncio
 import os
+import json
 
 gSched = Scheduler(g_dependency_mgr)
 
@@ -21,13 +22,13 @@ def handle_exception(loop, context):
     logging.error(f"Caught exception: {msg}")
 
 
-async def handle_task(request):
+async def handle_task_len(request):
     _j_task = request.query.get('tasks', {})
     logging.info(f'Running task {_j_task}')
     _tasks = await TaskParser.parse(_j_task)
     for _t in _tasks:
         await gSched.add_task(_t)
-    return web.Response(text=_t[0].task_name)
+    return web.json_response(text=json.dumps({'tasks': len(_tasks)}))
 
 
 async def handle(request):
@@ -53,11 +54,12 @@ async def handle(request):
 
 async def app_factory():
     app = web.Application()
-    app.add_routes([web.get('/', handle_task),
-                    web.get('/{name}', handle_task),
-                    web.get('/{tasks}', handle_task)])
+    app.add_routes([web.get('/', handle),
+                    web.get('/name', handle),
+                    web.get('/tasks', handle_task_len)])
     asyncio.get_event_loop().set_exception_handler(handle_exception)
     asyncio.get_event_loop().create_task(gSched.start())
+    asyncio.get_event_loop().set_debug(True)
     return app
 
 

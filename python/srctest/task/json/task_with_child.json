@@ -1,19 +1,29 @@
 {
-  "task": {
-    "name": "task-children",
-    "type": "LongLastingTask",
-    "depends-on": [],
-    "do-work": "print(%name%)",
-    "children": [
-      {
-        "task": {
+  "tasks": [
+    {
+      "name": "task-parent",
+      "type": "LongLastingTask",
+      "package": "task.impl",
+      "init": {
+        "task_name": "task-parent"
+      },
+      "depends-on": [],
+      "do-work": "print(%name%)",
+      "children": [
+        {
           "name": "children-1",
           "type": "LongLastingTask",
-          "depends-on": ["task-children"],
+          "init": {
+            "task_name": "children-1"
+          },
+          "package": "task.impl",
+          "depends-on": [
+            "task-parent"
+          ],
           "do-work": "print(%name%)",
           "children": []
         }
-      }
-    ]
-  }
+      ]
+    }
+  ]
 }

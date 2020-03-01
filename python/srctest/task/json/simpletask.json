@@ -1,15 +1,13 @@
 {
   "tasks": [
     {
-      "task": {
-        "name": "task-1",
-        "type": "LongLastingTask",
-        "package": "task.impl",
-        "init": {"task_name":  "task-1"},
-        "depends-on": [],
-        "do-work": "print(%name%)",
-        "children": []
-      }
+      "name": "task-1",
+      "type": "LongLastingTask",
+      "package": "task.impl",
+      "init": {"task_name":  "task-1"},
+      "depends-on": [],
+      "do-work": "print(%name%)",
+      "children": []
     }
   ]
 }

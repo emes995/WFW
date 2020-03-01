@@ -27,6 +27,18 @@ class AsyncScheduler:
         return self._parent_scheduler
 
     async def _add_pending_task(self, task: Task):
+
+        # async def _manage_dependencies(i_task: Task):
+        #     _ordered_task = []
+        #     for _td in i_task.dependencies:
+        #         if _td.has_dependencies():
+        #             _ordered_task.append(await _manage_dependencies(_td))
+        #         else:
+        #             _ordered_task.append(_td)
+        #
+        #     print(_ordered_task)
+        #
+        # await _manage_dependencies(task)
         self._pending_tasks.append(task)
         await self._run_queue.put(task)
 
@@ -41,18 +53,18 @@ class AsyncScheduler:
     async def start(self):
         logging.debug('Starting scheduler')
 
-        def _task_completed(task: Task, instanceObj, completedTask):
-            _result = completedTask.result()
+        def _task_completed(task: Task, instance_obj, completed_task):
+            _result = completed_task.result()
             logging.info(f'Task Completed task: {task.task_name} with result: {_result}')
-            instanceObj.parent_scheduler.set_result_for_task(_t, _result)
+            instance_obj.parent_scheduler.set_result_for_task(_t, _result)
 
-        async def _schedule_tasks(_tasks: list, instanceObj):
+        async def _schedule_tasks(_tasks: list, instance_obj):
             _sched_tasks = []
             _l_results = []
             for _tk in _tasks:
                 _sched_tasks.append(_tk.do_work())
-            _t = asyncio.ensure_future(*_sched_tasks)
-            _t.add_done_callback(functools.partial(_task_completed, _tk, instanceObj))
+                _t = asyncio.ensure_future(*_sched_tasks)
+                _t.add_done_callback(functools.partial(_task_completed, _tk, instance_obj))
 
         while True:
             logging.debug('Attempting to fetch a task')
@@ -63,6 +75,5 @@ class AsyncScheduler:
             self._running_tasks.append(_t)
             _tasks_to_execute.append(_t)
             await _schedule_tasks(_tasks_to_execute, self)
-
 
         logging.info('Stopping scheduler')
