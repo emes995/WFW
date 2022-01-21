@@ -1,4 +1,5 @@
 import aiounittest
+
 from dependency.Dependency import Dependency
 from task.Task import Task
 
@@ -15,5 +16,5 @@ class TestDependency(aiounittest.AsyncTestCase):
         t3 = Task('t1-2')
         t4 = Task('t1-3')
 
-        await dep_.add_tasks([t2, t3, t4])
+        dep_.add_tasks([t2, t3, t4])
         assert len(dep_) == 3

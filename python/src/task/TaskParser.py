@@ -19,7 +19,7 @@ class TaskParser:
 
         _dependencies = _task.get('depends-on', [])
         _dep_name = _task['name']
-        _dep_inz: Dependency = await g_dependency_mgr.create_dependency(_dep_name, _task_inz)
+        _dep_inz: Dependency = g_dependency_mgr.create_dependency(_dep_name, _task_inz)
 
         _task_children = _task.get('children', [])
         for _tc in _task_children:
@@ -27,7 +27,7 @@ class TaskParser:
                 logging.info(f'Looking for task {_tc}')
             else:
                 _task_c_inz = await cls.parse_task(_tc, _task_inz)
-                await g_dependency_mgr.add_task_to_dependency(_dep_name, _task_c_inz)
+                g_dependency_mgr.add_task_to_dependency(_dep_name, _task_c_inz)
 
         return _task_inz
 

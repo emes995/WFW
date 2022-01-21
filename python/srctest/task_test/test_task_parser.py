@@ -17,4 +17,4 @@ class TestAsyncTask(aiounittest.AsyncTestCase):
             _js = _jF.read()
 
         _tasks = await TaskParser.parse(_js)
-        logging.info(_tasks)
+        self.assertEqual('task-1', _tasks[0].task_name)

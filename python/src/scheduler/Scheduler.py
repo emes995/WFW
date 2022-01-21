@@ -1,7 +1,8 @@
+import logging
+
+from scheduler.AsyncScheduler import AsyncScheduler
 from task.Task import Task
 from dependency.DependencyManager import DependencyManager
-#from scheduler.SimpleScheduler import SimpleScheduler
-from scheduler.AsyncScheduler import AsyncScheduler
 import asyncio
 
 
@@ -15,8 +16,6 @@ class Scheduler:
         self._task_to_scheduler = {}
         self._results = {}
 
-        self._initialize()
-
     def add_scheduler(self, scheduler_type: str, scheduler):
         if scheduler_type not in self._scheduler_helpers:
             self._scheduler_helpers[scheduler_type] = scheduler
@@ -26,16 +25,13 @@ class Scheduler:
     def _get_scheduler(self, scheduler_type: str):
         return self._scheduler_helpers[scheduler_type]
 
-    def _initialize(self):
-        self.add_scheduler(AsyncScheduler.SCHEDULE_NAME, AsyncScheduler(self))
-
     def _find_scheduler_for_task(self, task: Task):
         if task in self._task_to_scheduler:
             return self._task_to_scheduler[task]
         return None
 
     async def add_task(self, task: Task):
-        await self._scheduler_helpers[AsyncScheduler.SCHEDULE_NAME].add_task(task)
+        await self._scheduler_helpers[AsyncScheduler.SCHEDULER_NAME].add_task(task)
 
     async def delete_task(self, task: Task):
         _schd = self._find_scheduler_for_task(task)
@@ -48,7 +44,9 @@ class Scheduler:
         await asyncio.gather(*_schedulers)
 
     def set_result_for_task(self, task, result):
-        self._results[task] = result
+        logging.debug(f'Setting result for task {task.id}')
+        self._results[task.id] = result
 
     async def collect_results_for_task(self, task: Task):
-        return self._results[task]
+        logging.debug(f'Collecting result for task {task.id}')
+        return self._results[task.id]

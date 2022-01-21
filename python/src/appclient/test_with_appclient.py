@@ -10,7 +10,7 @@ import os
 
 
 async def fetch(client, jFile: str):
-    _f = os.path.join(os.path.dirname(__file__), '..', '..', 'srctest', 'task', 'json', jFile)
+    _f = os.path.join(os.path.dirname(__file__), '..', '..', 'srctest', 'task_test', 'json', jFile)
     with open(_f, 'r') as _if:
         _j_str = _if.read()
     _params = {'tasks': _j_str}

@@ -35,27 +35,27 @@ class Task:
     def __eq__(self, other):
         return isinstance(other, Task) and other.id == self.id
 
-    async def delete_dependency(self, task):
+    def delete_dependency(self, task):
         self.dependencies.remove(task)
 
-    async def add_dependency(self, tasks: list):
+    def add_dependency(self, tasks: list):
         _myself = [_t for _t in tasks if _t == self]
-        assert len(_myself) == 0, 'Can not add task onto itself as a dependency'
+        assert len(_myself) == 0, 'Can not add task_test onto itself as a dependency_test'
         self._dependencies.extend(tasks)
 
     def has_dependencies(self):
         return len(self._dependencies) > 0
 
-    async def _resolve_dependencies(self, task) -> list:
+    def _resolve_dependencies(self, task) -> list:
         _tasks = []
         for _t in task.dependencies:
             if _t.has_dependencies():
-                _tasks.extend(await self._resolve_dependencies(_t))
+                _tasks.extend(self._resolve_dependencies(_t))
             _tasks.append(_t)
         return _tasks
 
-    async def resolve_dependencies(self):
-        return await self._resolve_dependencies(self)
+    def resolve_dependencies(self):
+        return self._resolve_dependencies(self)
 
     async def do_work(self):
         print(f'do work({self._task_name}) {self._id}')
