@@ -1,7 +1,7 @@
 import logging
 
 from scheduler.AsyncScheduler import AsyncScheduler
-from task.Task import Task
+from task.BaseTask import BaseTask
 from dependency.DependencyManager import DependencyManager
 import asyncio
 
@@ -25,15 +25,15 @@ class Scheduler:
     def _get_scheduler(self, scheduler_type: str):
         return self._scheduler_helpers[scheduler_type]
 
-    def _find_scheduler_for_task(self, task: Task):
+    def _find_scheduler_for_task(self, task: BaseTask):
         if task in self._task_to_scheduler:
             return self._task_to_scheduler[task]
         return None
 
-    async def add_task(self, task: Task):
+    async def add_task(self, task: BaseTask):
         await self._scheduler_helpers[AsyncScheduler.SCHEDULER_NAME].add_task(task)
 
-    async def delete_task(self, task: Task):
+    async def delete_task(self, task: BaseTask):
         _schd = self._find_scheduler_for_task(task)
         if not _schd:
             return None
@@ -47,6 +47,6 @@ class Scheduler:
         logging.debug(f'Setting result for task {task.id}')
         self._results[task.id] = result
 
-    async def collect_results_for_task(self, task: Task):
+    async def collect_results_for_task(self, task: BaseTask):
         logging.debug(f'Collecting result for task {task.id}')
         return self._results[task.id]

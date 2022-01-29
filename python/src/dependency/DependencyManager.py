@@ -1,5 +1,5 @@
 from dependency.Dependency import Dependency
-from task.Task import Task
+from task.BaseTask import BaseTask
 
 
 class DependencyManager:
@@ -7,14 +7,14 @@ class DependencyManager:
     def __init__(self):
         self._dependencies = dict()
 
-    def create_dependency(self, dependency_name: str, custodian_task: Task):
+    def create_dependency(self, dependency_name: str, custodian_task: BaseTask):
         _dp = self._dependencies.get(dependency_name)
         if _dp is None:
             _dp = Dependency(custodian_task)
             self._dependencies[dependency_name] = _dp
         return self._dependencies[dependency_name]
 
-    def add_task_to_dependency(self, dependency_name: str, task: Task) -> Dependency:
+    def add_task_to_dependency(self, dependency_name: str, task: BaseTask) -> Dependency:
         _dp = self._dependencies[dependency_name]
         _dp = _dp + task
         _dp.get_custodian_task.add_dependency([task])

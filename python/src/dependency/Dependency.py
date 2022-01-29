@@ -1,10 +1,10 @@
 import uuid
-from task.Task import Task
+from task.BaseTask import BaseTask
 
 
 class Dependency:
 
-    def __init__(self, task: Task):
+    def __init__(self, task: BaseTask):
         self._dependent_tasks = []
         self._custodian_task = task
         self._id = uuid.uuid4()
@@ -17,16 +17,16 @@ class Dependency:
     def get_custodian_task(self):
         return self._custodian_task
 
-    def remove_task(self, task: Task):
+    def remove_task(self, task: BaseTask):
         return self.dependent_tasks.remove(task)
 
     def add_tasks(self, tasks: list):
         for _t in tasks:
-            assert isinstance(_t, Task)
+            assert isinstance(_t, BaseTask)
             self + _t
 
-    def __add__(self, other: Task):
-        assert isinstance(other, Task)
+    def __add__(self, other: BaseTask):
+        assert isinstance(other, BaseTask)
         self.dependent_tasks.append(other)
         return self
 

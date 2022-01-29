@@ -4,7 +4,7 @@
 from aiohttp import web
 from dependency.DependencyManager import g_dependency_mgr
 from scheduler.Scheduler import Scheduler
-from task.Task import Task
+from task.BaseTask import BaseTask
 from task.TaskParser import TaskParser
 
 import logging
@@ -33,7 +33,7 @@ async def handle_task_len(request):
 
 async def handle(request):
 
-    class RunningTask(Task):
+    class RunningBaseTask(BaseTask):
         def __init__(self, task_name: str):
             super().__init__(task_name=task_name)
 
@@ -47,7 +47,7 @@ async def handle(request):
 
     _name = request.query.get('name', 'RunningTask')
     logging.info(f'Running task {_name}')
-    _rc = RunningTask(task_name=_name)
+    _rc = RunningBaseTask(task_name=_name)
     await gSched.add_task(_rc)
     return web.Response(text='queued up')
 

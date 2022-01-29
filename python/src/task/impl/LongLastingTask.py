@@ -3,10 +3,10 @@
 #
 import asyncio
 import logging
-from task.Task import Task
+from task.BaseTask import BaseTask
 
 
-class LongLastingTask(Task):
+class LongLastingBaseTask(BaseTask):
 
     def __init__(self, task_name: str):
         super().__init__(task_name=task_name)

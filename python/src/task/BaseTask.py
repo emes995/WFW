@@ -8,7 +8,7 @@ from utils.OrderedIdGenerator import OrderedIdGenerator
 _BEGIN_SEED_KEY = 'f{uuid.uuid4()}'
 
 
-class Task:
+class BaseTask:
     def __init__(self, task_name: str):
         self._id = OrderedIdGenerator.generate_ordered_id(_BEGIN_SEED_KEY)
         self._task_name = task_name
@@ -33,7 +33,7 @@ class Task:
         return self.id > other.id
 
     def __eq__(self, other):
-        return isinstance(other, Task) and other.id == self.id
+        return isinstance(other, BaseTask) and other.id == self.id
 
     def delete_dependency(self, task):
         self.dependencies.remove(task)

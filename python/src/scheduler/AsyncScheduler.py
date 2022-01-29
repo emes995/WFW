@@ -3,13 +3,14 @@
 #
 from asyncio import QueueEmpty
 
-from task.Task import Task
+from task.BaseTask import BaseTask
 from dependency.DependencyManager import g_dependency_mgr
 from dependency.Dependency import Dependency
 
 import asyncio
 import logging
 import functools
+import typing
 
 
 class AsyncScheduler:
@@ -32,26 +33,17 @@ class AsyncScheduler:
     def stop_scheduler(self):
         self._stop_scheduler = True
 
-    async def _add_pending_task(self, task: Task):
+    def cancel_task(self, task: typing.Type[BaseTask]):
+        pass
 
-        # async def _manage_dependencies(i_task: Task):
-        #     _ordered_task = []
-        #     for _td in i_task.dependencies:
-        #         if _td.has_dependencies():
-        #             _ordered_task.append(await _manage_dependencies(_td))
-        #         else:
-        #             _ordered_task.append(_td)
-        #
-        #     print(_ordered_task)
-        #
-        # await _manage_dependencies(task_test)
+    async def _add_pending_task(self, task: typing.Type[BaseTask]):
         self._pending_tasks.append(task)
         await self._run_queue.put(task)
 
-    async def add_task(self, task: Task):
+    async def add_task(self, task: typing.Type[BaseTask]):
         await self._add_pending_task(task)
 
-    def delete_task(self, task: Task):
+    def delete_task(self, task: typing.Type[BaseTask]):
         if task in self._pending_tasks:
             self._pending_tasks.remove(task)
         return task
@@ -59,18 +51,19 @@ class AsyncScheduler:
     async def start(self):
         logging.debug('Starting Async scheduler')
 
-        def _task_completed(task: Task, instance_obj, completed_task):
+        def _task_completed(task: typing.Type[BaseTask], instance_obj, completed_task):
             _result = completed_task.result()
             logging.info(f'Task Completed task_test: {task.task_name} with result: {_result}')
             instance_obj.parent_scheduler.set_result_for_task(task, _result)
 
-        def _schedule_tasks(_tasks: list, instance_obj):
-            _sched_tasks = []
-            _l_results = []
+        def _schedule_tasks(_tasks: typing.List[BaseTask], instance_obj):
+            _future_tasks = []
             for _tk in _tasks:
-                _sched_tasks.append(_tk.do_work())
-                _tf = asyncio.ensure_future(*_sched_tasks)
+                _tf = asyncio.create_task(_tk.do_work(), name=_tk.task_name)
                 _tf.add_done_callback(functools.partial(_task_completed, _tk, instance_obj))
+                _future_tasks.append(_tf)
+
+            return _future_tasks
 
         while True:
             try:
@@ -81,7 +74,7 @@ class AsyncScheduler:
                 self._pending_tasks.remove(_t)
                 self._running_tasks.append(_t)
                 _tasks_to_execute.append(_t)
-                _schedule_tasks(_tasks_to_execute, self)
+                _futures = _schedule_tasks(_tasks_to_execute, self)
             except QueueEmpty:
                 pass
             await asyncio.sleep(0.001)

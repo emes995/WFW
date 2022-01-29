@@ -4,7 +4,7 @@ import aiounittest
 from dependency.Dependency import Dependency
 from dependency.DependencyManager import DependencyManager
 from scheduler.AsyncScheduler import AsyncScheduler
-from task.impl.LongLastingTask import LongLastingTask
+from task.impl.LongLastingTask import LongLastingBaseTask
 from scheduler.Scheduler import Scheduler
 import logging
 import logging.config
@@ -17,9 +17,9 @@ class TestAsyncTask(aiounittest.AsyncTestCase):
         logging.config.fileConfig(fname=os.path.join(os.path.dirname(__file__), '..', '..', 'src', 'config', 'logging.conf'))
         logging.info('Starting')
         dpm = DependencyManager()
-        t1 = LongLastingTask('t1')
-        t2 = LongLastingTask('t2')
-        t3 = LongLastingTask('t3')
+        t1 = LongLastingBaseTask('t1')
+        t2 = LongLastingBaseTask('t2')
+        t3 = LongLastingBaseTask('t3')
 
         dp1: Dependency = dpm.create_dependency('dep_1', t1)
         dp2: Dependency = dpm.create_dependency('dep_2', t2)
@@ -27,30 +27,30 @@ class TestAsyncTask(aiounittest.AsyncTestCase):
 
         assert len(dpm.get_tasks_in_dependency('dep_1')) == 0
 
-        t11 = LongLastingTask('t11')
-        t12 = LongLastingTask('t12')
-        t13 = LongLastingTask('t13')
+        t11 = LongLastingBaseTask('t11')
+        t12 = LongLastingBaseTask('t12')
+        t13 = LongLastingBaseTask('t13')
         dpm.add_task_to_dependency('dep_1', t11)
         dpm.add_task_to_dependency('dep_1', t12)
         dpm.add_task_to_dependency('dep_1', t13)
 
         assert len(dpm.get_tasks_in_dependency('dep_1')) == 3
 
-        t21 = LongLastingTask('t21')
-        t22 = LongLastingTask('t22')
-        t23 = LongLastingTask('t23')
+        t21 = LongLastingBaseTask('t21')
+        t22 = LongLastingBaseTask('t22')
+        t23 = LongLastingBaseTask('t23')
         dpm.add_task_to_dependency('dep_2', t21)
         dpm.add_task_to_dependency('dep_2', t11)
         dpm.add_task_to_dependency('dep_2', t12)
         dpm.add_task_to_dependency('dep_2', t22)
         dpm.add_task_to_dependency('dep_2', t23)
 
-        t31 = LongLastingTask('t31')
-        t32 = LongLastingTask('t32')
+        t31 = LongLastingBaseTask('t31')
+        t32 = LongLastingBaseTask('t32')
         dpm.add_task_to_dependency('dep_3', t31)
         dpm.add_task_to_dependency('dep_3', t32)
 
-        t4 = LongLastingTask('t4')
+        t4 = LongLastingBaseTask('t4')
         dp4: Dependency = dpm.create_dependency('dep_4', t4)
         dpm.add_task_to_dependency('dep_4', t31)
         dpm.add_task_to_dependency('dep_4', t1)
@@ -70,7 +70,7 @@ class TestAsyncTask(aiounittest.AsyncTestCase):
         await sch.add_task(t3)
         await sch.add_task(t4)
 
-        class ExitTask(LongLastingTask):
+        class ExitTask(LongLastingBaseTask):
             def __init__(self, scheduler: AsyncScheduler):
                 self._scheduler = scheduler
                 super().__init__(task_name='exit_task')
