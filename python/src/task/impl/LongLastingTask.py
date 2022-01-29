@@ -6,7 +6,7 @@ import logging
 from task.BaseTask import BaseTask
 
 
-class LongLastingBaseTask(BaseTask):
+class LongLastingTask(BaseTask):
 
     def __init__(self, task_name: str):
         super().__init__(task_name=task_name)
