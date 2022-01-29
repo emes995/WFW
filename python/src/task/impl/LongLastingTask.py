@@ -13,7 +13,7 @@ class LongLastingTask(BaseTask):
 
     async def do_work(self):
         logging.info(f'Executing task name: {self.task_name}')
-        for i in range(int(10)):
+        for i in range(int(90)):
             await asyncio.sleep(1)
             logging.info(f'Task name {self.task_name} and index {i}')
 

@@ -1,0 +1,3 @@
+
+class ResultNotAvailable(BaseException):
+    pass

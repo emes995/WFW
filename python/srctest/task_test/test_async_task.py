@@ -1,14 +1,15 @@
 import asyncio
-
 import aiounittest
+import logging
+import logging.config
+import os
+
 from dependency.Dependency import Dependency
 from dependency.DependencyManager import DependencyManager
 from scheduler.AsyncScheduler import AsyncScheduler
 from task.impl.LongLastingTask import LongLastingTask
 from scheduler.Scheduler import Scheduler
-import logging
-import logging.config
-import os
+from scheduler.Exceptions import ResultNotAvailable
 
 
 class TestAsyncTask(aiounittest.AsyncTestCase):
@@ -70,6 +71,20 @@ class TestAsyncTask(aiounittest.AsyncTestCase):
         await sch.add_task(t3)
         await sch.add_task(t4)
 
+        class CancelTask(LongLastingTask):
+            def __init__(self, scheduler: AsyncScheduler):
+                self._schedler = scheduler
+                super().__init__(task_name='cancel_task_t3')
+
+            async def do_work(self):
+                logging.debug(f'Starting f{self.task_name}')
+                for _r in range(30):
+                    await asyncio.sleep(0.5)
+
+                logging.debug(f'*******************Attempting to cancel {self.task_name}*******************')
+                self._schedler.cancel_task(t3)
+                logging.debug(f'*******************Cancelled task {t3.task_name}***************************')
+
         class ExitTask(LongLastingTask):
             def __init__(self, scheduler: AsyncScheduler):
                 self._scheduler = scheduler
@@ -84,6 +99,10 @@ class TestAsyncTask(aiounittest.AsyncTestCase):
                 self._scheduler.stop_scheduler()
 
         await sch.add_task(ExitTask(async_sched))
+        await sch.add_task(CancelTask(async_sched))
         await sch.start()
-        results = await sch.collect_results_for_task(t1)
+        try:
+            results = await sch.collect_results_for_task(t1)
+        except ResultNotAvailable:
+            logging.error(f'Results not ready for task {t1}')
         logging.info(f'Results: {results}')
