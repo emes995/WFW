@@ -98,6 +98,15 @@ class TestAsyncTask(aiounittest.AsyncTestCase):
 
         await async_sched.add_task(ExitTask(async_sched))
         await async_sched.add_task(CancelTask(async_sched))
+
+        async def delete_task(task: LongLastingTask):
+            for _r in range(20):
+                await asyncio.sleep(1)
+
+            logging.info(f'Attempting to delete task {task}')
+            await async_sched.delete_task(task=task)
+
+        asyncio.create_task(delete_task(task=t1))
         await async_sched.start()
         try:
             results = await async_sched.collect_results_for_task(t1)

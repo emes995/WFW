@@ -35,7 +35,7 @@ class AsyncScheduler(Scheduler):
         _task = self._running_tasks[task]
         if not _task.cancelled() and not _task.done():
             logging.info(f'Canceling task {task.task_name}')
-            _task.cancel() # msg=f'Canceling task: {task.task_name}')
+            _task.cancel()
         else:
             logging.info(f'Attempting to cancel completed/canceled task {_task.task_name}')
 
@@ -49,6 +49,10 @@ class AsyncScheduler(Scheduler):
     async def delete_task(self, task: BaseTask):
         if task in self._pending_tasks:
             self._pending_tasks.remove(task)
+
+        if task in self._running_tasks:
+            await self.cancel_task(task=task)
+
         return task
 
     async def start(self):
