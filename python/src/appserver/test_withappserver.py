@@ -56,7 +56,7 @@ async def app_factory():
     app = web.Application()
     app.add_routes([web.get('/', handle),
                     web.get('/name', handle),
-                    web.get('/tasks', handle_task_len)])
+                    web.get(' /tasks', handle_task_len)])
     asyncio.get_event_loop().set_exception_handler(handle_exception)
     asyncio.get_event_loop().create_task(gSched.start())
     asyncio.get_event_loop().set_debug(True)
