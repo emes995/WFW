@@ -4,9 +4,10 @@ import logging
 import logging.config
 import os
 
+from scheduler.aiobased.AsyncQueue import AsyncQueue
 from dependency.Dependency import Dependency
 from dependency.DependencyManager import DependencyManager
-from scheduler.AsyncScheduler import AsyncScheduler
+from scheduler.aiobased.AsyncScheduler import AsyncScheduler
 from task.impl.LongLastingTask import LongLastingTask
 from scheduler.Exceptions import ResultNotAvailable
 
@@ -62,7 +63,8 @@ class TestAsyncTask(aiounittest.AsyncTestCase):
         deps = dpm.get_tasks_in_dependency('dep_4')
         assert len(deps) == 5, f'acquired {len(deps)} instead of 5'
 
-        async_sched = AsyncScheduler(dependency_manager=dpm)
+        async_sched = AsyncScheduler(dependency_manager=dpm,
+                                     queue_impl=AsyncQueue(wait_interval=0.02, max_wait=1.0))
 
         await async_sched.add_task(t1)
         await async_sched.add_task(t2)

@@ -1,8 +1,7 @@
 #
 #
 #
-from asyncio import QueueEmpty
-
+from scheduler.BaseQueue import BaseQueue, QueueEmptyException
 from task.BaseTask import BaseTask
 from dependency.DependencyManager import g_dependency_mgr, DependencyManager
 from dependency.Dependency import Dependency
@@ -19,9 +18,9 @@ class AsyncScheduler(Scheduler):
 
     SCHEDULER_NAME = 'AsyncScheduler'
 
-    def __init__(self, dependency_manager: DependencyManager):
+    def __init__(self, dependency_manager: DependencyManager, queue_impl: BaseQueue):
         super().__init__(dependency_manager=dependency_manager)
-        self._run_queue = asyncio.Queue()
+        self._queue_impl = queue_impl
         self._pending_tasks: typing.List[BaseTask] = []
         self._completed_tasks: typing.List[BaseTask] = []
         self._failed_tasks: typing.List[BaseTask] = []
@@ -41,7 +40,7 @@ class AsyncScheduler(Scheduler):
 
     async def _add_pending_task(self, task: BaseTask):
         self._pending_tasks.append(task)
-        await self._run_queue.put(task)
+        await self._queue_impl.add_task(task)
 
     async def add_task(self, task: BaseTask):
         await self._add_pending_task(task)
@@ -77,14 +76,14 @@ class AsyncScheduler(Scheduler):
 
         while True:
             try:
-                _t = self._run_queue.get_nowait()
+                _t = await self._queue_impl.get_task()
                 logging.debug(f'Fetched task {_t.task_name}')
                 _dep: Dependency = g_dependency_mgr.create_dependency(_t.task_name, _t)
                 _tasks_to_execute = g_dependency_mgr.get_tasks_in_dependency(_t.task_name)
                 self._pending_tasks.remove(_t)
                 _tasks_to_execute.append(_t)
                 _schedule_tasks(_tasks_to_execute, self)
-            except QueueEmpty:
+            except QueueEmptyException:
                 pass
             await asyncio.sleep(0.001)
             if self._stop_scheduler:

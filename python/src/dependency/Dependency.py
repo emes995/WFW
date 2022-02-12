@@ -1,36 +1,38 @@
+import typing
 import uuid
+
 from task.BaseTask import BaseTask
 
 
 class Dependency:
 
-    def __init__(self, task: BaseTask):
+    def __init__(self, task):
         self._dependent_tasks = []
         self._custodian_task = task
         self._id = uuid.uuid4()
 
     @property
-    def dependent_tasks(self):
+    def dependent_tasks(self) -> typing.List[BaseTask]:
         return self._dependent_tasks
 
     @property
-    def get_custodian_task(self):
+    def get_custodian_task(self) -> BaseTask:
         return self._custodian_task
 
     def remove_task(self, task: BaseTask):
-        return self.dependent_tasks.remove(task)
+        self.dependent_tasks.remove(task)
 
     def add_tasks(self, tasks: list):
         for _t in tasks:
             assert isinstance(_t, BaseTask)
             self + _t
 
-    def __add__(self, other: BaseTask):
+    def __add__(self, other: BaseTask) -> typing.Any:
         assert isinstance(other, BaseTask)
         self.dependent_tasks.append(other)
         return self
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.dependent_tasks)
 
     def __str__(self):

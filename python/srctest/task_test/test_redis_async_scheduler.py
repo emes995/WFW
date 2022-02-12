@@ -6,10 +6,10 @@ import os
 import aiounittest
 
 from dependency.DependencyManager import DependencyManager
-from scheduler.RedisAsyncScheduler import RedisAsyncScheduler
+from scheduler.redis.RedisAsyncScheduler import RedisAsyncScheduler
 
 
-class MyTestCase(aiounittest.AsyncTestCase):
+class TestRedisAsyncScheduler(aiounittest.AsyncTestCase):
 
     async def test_redis_async_scheduler(self):
         logging.config.fileConfig(fname=os.path.join(os.path.dirname(__file__),

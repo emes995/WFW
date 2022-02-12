@@ -2,6 +2,8 @@
 # @date:
 # @version:
 #
+import json
+import typing
 
 from utils.OrderedIdGenerator import OrderedIdGenerator
 
@@ -40,7 +42,7 @@ class BaseTask:
 
     def add_dependency(self, tasks: list):
         _myself = [_t for _t in tasks if _t == self]
-        assert len(_myself) == 0, 'Can not add task_test onto itself as a dependency_test'
+        assert len(_myself) == 0, 'Can not add task onto itself as a dependency'
         self._dependencies.extend(tasks)
 
     def has_dependencies(self):
@@ -54,11 +56,26 @@ class BaseTask:
             _tasks.append(_t)
         return _tasks
 
-    def resolve_dependencies(self):
+    def resolve_dependencies(self) -> typing.List[typing.Any]:
         return self._resolve_dependencies(self)
 
     async def do_work(self):
         print(f'do work({self._task_name}) {self._id}')
+
+    def to_json(self) -> str:
+        from dependency.DependencyManager import g_dependency_mgr
+        _dep = g_dependency_mgr.get_dependency(dependency_name=self._task_name)
+        _dep_tasks: typing.List[BaseTask] = _dep.dependent_tasks
+        return json.dumps(
+            {
+                'name': self._task_name,
+                'type': type(self),
+                'package': str(self.__class__),
+                'init': {},
+                'depends-on': [_t.task_name for _t in self.resolve_dependencies()],
+                'do-work': (),
+                'children': [_d.task_name for _d in _dep_tasks]
+            })
 
     def __str__(self):
         return f'{self._task_name}:{self._dependencies}'
