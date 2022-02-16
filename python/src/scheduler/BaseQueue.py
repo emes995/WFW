@@ -18,3 +18,7 @@ class BaseQueue(metaclass=ABCMeta):
     @abstractmethod
     async def get_task(self) -> BaseTask:
         pass
+
+    @abstractmethod
+    async def length(self):
+        pass

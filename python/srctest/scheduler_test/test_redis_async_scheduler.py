@@ -23,7 +23,7 @@ class TestRedisAsyncScheduler(aiounittest.AsyncTestCase):
                 await asyncio.sleep(1.0)
             logging.info('Attempting to close RedisAsyncScheduler')
             await async_sched.close()
-            async_sched.stop_scheduler()
+            await async_sched.stop_scheduler()
 
         asyncio.create_task(do_work())
         await async_sched.start()
