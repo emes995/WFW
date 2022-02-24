@@ -18,4 +18,3 @@ class TestRedisAsyncScheduler(aiounittest.AsyncTestCase):
 
         await _connection.connection_pool.disconnect()
         await _connection.close()
-

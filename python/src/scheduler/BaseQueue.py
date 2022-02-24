@@ -5,6 +5,7 @@ from task.BaseTask import BaseTask
 class QueueFullException(Exception):
     pass
 
+
 class QueueEmptyException(Exception):
     pass
 

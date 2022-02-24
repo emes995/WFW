@@ -36,7 +36,7 @@ class AsyncScheduler(Scheduler):
             logging.info(f'Canceling task {task.task_name}')
             _task.cancel()
         else:
-            logging.info(f'Attempting to cancel completed/canceled task {_task.task_name}')
+            logging.info(f'Attempting to cancel completed/canceled task {task.task_name}')
 
     async def _add_pending_task(self, task: BaseTask):
         self._pending_tasks.append(task)

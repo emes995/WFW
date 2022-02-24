@@ -38,3 +38,6 @@ class AsyncQueue(BaseQueue):
             raise QueueEmptyException()
 
         return _task
+
+    async def length(self):
+        return self._queue.qsize()

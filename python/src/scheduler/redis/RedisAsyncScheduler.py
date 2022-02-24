@@ -17,7 +17,7 @@ class RedisAsyncScheduler(AsyncScheduler):
     def __init__(self, dependency_manager: DependencyManager, use_redis_db: int = 0):
         self._redis = aioredis.from_url(f'redis://localhost:27645/{use_redis_db}')
         super().__init__(dependency_manager=dependency_manager,
-                         queue_impl=RedisAsyncQueue(redis_connection=self._redis, channel='scheduler'))
+                         queue_impl=RedisAsyncQueue(redis_connection=self._redis, queue_name='scheduler'))
         self._ping_task = asyncio.create_task(self._ensure_connection_is_alive(ping_interval=5))
 
     async def _ensure_connection_is_alive(self, ping_interval: int):
