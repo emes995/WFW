@@ -14,6 +14,8 @@ class TestRedisAsyncScheduler(aiounittest.AsyncTestCase):
         self.assertEqual(await _raq.length(), 1, f'Expected 1 but got {await _raq.length()} instead')
         _result = await _raq.get_task()
         self.assertEqual(_result.task_name, 'testing_add', f'Expected name: testing but got {_result.task_name}')
+        self.assertEqual(await _raq.length(), 0, f'Expected 0 but got {await _raq.length()} instead')
+
         await _connection.connection_pool.disconnect()
         await _connection.close()
 
