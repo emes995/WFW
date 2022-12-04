@@ -1,10 +1,9 @@
-import aiounittest
-
 from dependency.Dependency import Dependency
 from task.BaseTask import BaseTask
+from testutils.WFWAsyncTestCase import WFWAsyncTestCase
 
 
-class TestDependency(aiounittest.AsyncTestCase):
+class TestDependency(WFWAsyncTestCase):
 
     async def test_dependency(self):
 

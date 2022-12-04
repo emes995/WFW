@@ -3,13 +3,12 @@ import logging
 import logging.config
 import os
 
-import aiounittest
-
 from dependency.DependencyManager import DependencyManager
 from scheduler.redis.RedisAsyncScheduler import RedisAsyncScheduler
+from testutils.WFWAsyncTestCase import WFWAsyncTestCase
 
 
-class TestRedisAsyncScheduler(aiounittest.AsyncTestCase):
+class TestRedisAsyncScheduler(WFWAsyncTestCase):
 
     async def test_redis_async_scheduler(self):
         logging.config.fileConfig(fname=os.path.join(os.path.dirname(__file__),

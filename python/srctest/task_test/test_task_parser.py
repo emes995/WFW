@@ -4,9 +4,10 @@ import logging.config
 import os
 
 from task.TaskParser import TaskParser
+from testutils.WFWAsyncTestCase import WFWAsyncTestCase
 
 
-class TestAsyncTask(aiounittest.AsyncTestCase):
+class TestAsyncTask(WFWAsyncTestCase):
 
     async def test_task_parser(self):
         _curDir = os.path.dirname(__file__)

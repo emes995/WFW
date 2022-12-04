@@ -1,9 +1,10 @@
-import unittest
 import uuid
+
+from testutils.WFWAsyncTestCase import WFWTestCase
 from utils.OrderedIdGenerator import OrderedIdGenerator
 
 
-class TestIdGenerator(unittest.TestCase):
+class TestIdGenerator(WFWTestCase):
 
     def test_sequenced_id_generator(self):
         start_sequence = f'{uuid.uuid4()}'

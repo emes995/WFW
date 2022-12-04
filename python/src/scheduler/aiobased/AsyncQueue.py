@@ -11,8 +11,8 @@ from task.BaseTask import BaseTask
 
 class AsyncQueue(BaseQueue):
 
-    def __init__(self, wait_interval: float = 0.01, max_wait: float = 5.0):
-        self._queue = asyncio.Queue()
+    def __init__(self, wait_interval: float = 0.01, max_wait: float = 5.0, max_size: int = 100):
+        self._queue = asyncio.Queue(maxsize=max_size)
         self._wait_interval = wait_interval
         self._max_wait = max_wait
 
@@ -39,5 +39,13 @@ class AsyncQueue(BaseQueue):
 
         return _task
 
-    async def length(self):
+    async def get_task_wait(self) -> BaseTask:
+        try:
+            _task = await self._queue.get()
+        except QueueEmpty:
+            raise QueueEmptyException()
+
+        return _task
+
+    def length(self):
         return self._queue.qsize()

@@ -1,5 +1,4 @@
 import asyncio
-import aiounittest
 import logging
 import logging.config
 import os
@@ -10,9 +9,10 @@ from dependency.DependencyManager import DependencyManager
 from scheduler.aiobased.AsyncScheduler import AsyncScheduler
 from task.impl.LongLastingTask import LongLastingTask
 from scheduler.Exceptions import ResultNotAvailable
+from testutils.WFWAsyncTestCase import WFWAsyncTestCase
 
 
-class TestAsyncTask(aiounittest.AsyncTestCase):
+class TestAsyncTask(WFWAsyncTestCase):
 
     async def test_async_task(self):
         logging.config.fileConfig(fname=os.path.join(os.path.dirname(__file__),

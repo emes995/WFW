@@ -1,11 +1,11 @@
 import aioredis
-import aiounittest
 
 from scheduler.redis.RedisAsyncQueue import RedisAsyncQueue
 from task.BaseTask import BaseTask
+from testutils.WFWAsyncTestCase import WFWAsyncTestCase
 
 
-class TestRedisAsyncScheduler(aiounittest.AsyncTestCase):
+class TestRedisAsyncScheduler(WFWAsyncTestCase):
     async def test_redis_queue(self):
         _connection = aioredis.from_url(f'redis://localhost:27645/0')
         _raq = RedisAsyncQueue(redis_connection=_connection, queue_name='testing')
