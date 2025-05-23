@@ -21,7 +21,6 @@ class TestRedisAsyncScheduler(WFWAsyncTestCase):
             for _r in range(40):
                 await asyncio.sleep(1.0)
             logging.info('Attempting to close RedisAsyncScheduler')
-            await async_sched.close()
             await async_sched.stop_scheduler()
 
         asyncio.create_task(do_work())

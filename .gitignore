@@ -7,3 +7,4 @@ venv/**
 
 #ignore pycache
 __pycache__
+dump.rdb

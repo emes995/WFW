@@ -7,7 +7,7 @@ from testutils.WFWAsyncTestCase import WFWAsyncTestCase
 
 class TestRedisAsyncScheduler(WFWAsyncTestCase):
     async def test_redis_queue(self):
-        _connection = aioredis.from_url(f'redis://localhost:27645/0')
+        _connection = aioredis.from_url(f'redis://localhost:6379/0')
         _raq = RedisAsyncQueue(redis_connection=_connection, queue_name='testing')
         self.assertEqual(await _raq.length(), 0, f'Expected 0 but got {await _raq.length()} instead')
         _result = await _raq.add_task(BaseTask(task_name='testing_add'))

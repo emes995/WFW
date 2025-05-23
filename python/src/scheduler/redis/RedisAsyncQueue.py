@@ -1,6 +1,6 @@
 from aioredis import Redis
 
-from scheduler.BaseQueue import BaseQueue
+from scheduler.BaseQueue import BaseQueue, QueueEmptyException
 from task.BaseTask import BaseTask
 from task.TaskParser import TaskParser
 
@@ -19,6 +19,8 @@ class RedisAsyncQueue(BaseQueue):
 
     async def get_task(self) -> BaseTask:
         _jsonTask = await self._redis.lpop(self.queue_name)
+        if _jsonTask is None:
+            raise QueueEmptyException(f'{self.__repr__} Queue is empty')
         _task_inz = await TaskParser().parse(_jsonTask)
         return _task_inz[0]
 
